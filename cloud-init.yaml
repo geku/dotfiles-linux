@@ -3,7 +3,7 @@
 # Usage: cloud-init init --file cloud-init.yaml
 
 # Set hostname
-hostname: dev-vm
+# hostname: dev-vm
 
 # Update and upgrade packages on first boot
 package_update: true
