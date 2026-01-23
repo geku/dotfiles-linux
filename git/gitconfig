@@ -1,0 +1,132 @@
+# Git Configuration
+# ~/.gitconfig
+
+[user]
+    name = Georg Kunz
+    email = kwd@gmx.ch
+
+[init]
+    defaultBranch = main
+
+[core]
+    editor = nano
+    autocrlf = input
+    whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+    pager = bat --style=plain --paging=always 2>/dev/null || less
+
+[color]
+    ui = auto
+    branch = auto
+    diff = auto
+    status = auto
+
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+
+[color "status"]
+    added = green
+    changed = yellow
+    untracked = red
+
+[pull]
+    rebase = true
+
+[push]
+    default = current
+    autoSetupRemote = true
+
+[fetch]
+    prune = true
+
+[rebase]
+    autoStash = true
+
+[merge]
+    conflictstyle = diff3
+    tool = vimdiff
+
+[diff]
+    colorMoved = default
+    algorithm = histogram
+
+[alias]
+    # Status
+    s = status -sb
+    st = status
+    
+    # Commits
+    c = commit
+    cm = commit -m
+    ca = commit --amend
+    can = commit --amend --no-edit
+    
+    # Branches
+    b = branch
+    ba = branch -a
+    bd = branch -d
+    bD = branch -D
+    
+    # Checkout
+    co = checkout
+    cob = checkout -b
+    
+    # Diff
+    d = diff
+    ds = diff --staged
+    dw = diff --word-diff
+    
+    # Log
+    l = log --oneline -15
+    lg = log --oneline --graph --decorate
+    lga = log --oneline --graph --decorate --all
+    ll = log --pretty=format:'%C(yellow)%h%Creset %s %C(green)(%cr)%Creset %C(blue)<%an>%Creset' -15
+    
+    # Remote
+    f = fetch
+    fa = fetch --all
+    pl = pull
+    ps = push
+    psf = push --force-with-lease
+    
+    # Reset
+    unstage = reset HEAD --
+    undo = reset --soft HEAD~1
+    
+    # Stash
+    ss = stash
+    sp = stash pop
+    sl = stash list
+    
+    # Misc
+    alias = config --get-regexp ^alias\\.
+    contributors = shortlog --summary --numbered
+    last = log -1 HEAD --stat
+    graph = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)'
+
+[credential]
+    helper = store
+
+[help]
+    autocorrect = prompt
+
+[rerere]
+    enabled = true
+
+# GitHub CLI integration
+[credential "https://github.com"]
+    helper = !gh auth git-credential
+
+[credential "https://gist.github.com"]
+    helper = !gh auth git-credential
+
+# Include local config if exists (for machine-specific settings)
+[include]
+    path = ~/.gitconfig.local

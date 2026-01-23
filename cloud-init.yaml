@@ -1,0 +1,187 @@
+#cloud-config
+# Ubuntu Developer VM Setup
+# Usage: cloud-init init --file cloud-init.yaml
+
+# Set hostname
+hostname: dev-vm
+
+# Update and upgrade packages on first boot
+package_update: true
+package_upgrade: true
+
+# Install packages
+packages:
+  # Core utilities
+  - git
+  - curl
+  - wget
+  - nano
+  - jq
+  - ack
+  - htop
+  - tree
+  - unzip
+  - zip
+  - ca-certificates
+  - gnupg
+  - lsb-release
+  - software-properties-common
+  - apt-transport-https
+  
+  # Build essentials for compiling
+  - build-essential
+  - gcc
+  - g++
+  - make
+  - cmake
+  - pkg-config
+  - autoconf
+  - automake
+  - libtool
+  
+  # Common development libraries
+  - libssl-dev
+  - libffi-dev
+  - zlib1g-dev
+  - libbz2-dev
+  - libreadline-dev
+  - libsqlite3-dev
+  - libncursesw5-dev
+  - libxml2-dev
+  - libxmlsec1-dev
+  - liblzma-dev
+  - tk-dev
+  - xz-utils
+  
+  # Fish shell
+  - fish
+
+# Create groups
+groups:
+  - docker
+
+# Configure default user
+system_info:
+  default_user:
+    groups: [docker]
+
+runcmd:
+  # ============================================
+  # Docker Installation
+  # ============================================
+  - |
+    # Add Docker's official GPG key
+    install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    chmod a+r /etc/apt/keyrings/docker.asc
+    
+    # Add Docker repository
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+    
+    # Install Docker
+    apt-get update
+    apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    
+    # Enable and start Docker
+    systemctl enable docker
+    systemctl start docker
+
+  # ============================================
+  # GitHub CLI Installation
+  # ============================================
+  - |
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+    chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    apt-get update
+    apt-get install -y gh
+
+  # ============================================
+  # HTTPie Installation
+  # ============================================
+  - |
+    curl -SsL https://packages.httpie.io/deb/KEY.gpg | gpg --dearmor -o /usr/share/keyrings/httpie.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/httpie.gpg] https://packages.httpie.io/deb ./" | tee /etc/apt/sources.list.d/httpie.list > /dev/null
+    apt-get update
+    apt-get install -y httpie
+
+  # ============================================
+  # bat Installation (better cat)
+  # ============================================
+  - |
+    apt-get install -y bat
+    # Create symlink for 'bat' command (Ubuntu packages it as 'batcat')
+    ln -sf /usr/bin/batcat /usr/local/bin/bat
+
+  # ============================================
+  # Starship Prompt Installation
+  # ============================================
+  - |
+    curl -sS https://starship.rs/install.sh | sh -s -- -y
+
+  # ============================================
+  # Fira Code Nerd Font Installation
+  # ============================================
+  - |
+    mkdir -p /usr/local/share/fonts/nerd-fonts
+    cd /tmp
+    curl -fLO https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip
+    unzip -o FiraCode.zip -d /usr/local/share/fonts/nerd-fonts/
+    rm FiraCode.zip
+    fc-cache -fv
+
+  # ============================================
+  # mise (formerly rtx) Installation
+  # ============================================
+  - |
+    curl https://mise.run | sh
+    # Make mise available system-wide
+    ln -sf /root/.local/bin/mise /usr/local/bin/mise
+
+  # ============================================
+  # Configure default user
+  # ============================================
+  - |
+    # Get the default user (usually 'ubuntu' on cloud images)
+    DEFAULT_USER=$(getent passwd 1000 | cut -d: -f1)
+    
+    if [ -n "$DEFAULT_USER" ]; then
+      # Add user to docker group
+      usermod -aG docker "$DEFAULT_USER"
+      
+      # Set fish as default shell
+      chsh -s /usr/bin/fish "$DEFAULT_USER"
+      
+      # Install mise for the user
+      su - "$DEFAULT_USER" -c 'curl https://mise.run | sh'
+      
+      # Clone dotfiles (update URL to your repo)
+      # su - "$DEFAULT_USER" -c 'git clone https://github.com/YOUR_USERNAME/dotfiles.git ~/.dotfiles && ~/.dotfiles/install.sh'
+    fi
+
+# Final message
+final_message: |
+  ==========================================
+  Developer VM setup complete!
+  
+  Installed:
+  - Docker (with compose plugin)
+  - Git
+  - GitHub CLI (gh)
+  - HTTPie
+  - curl
+  - nano
+  - jq
+  - bat
+  - fish shell (set as default)
+  - ack
+  - mise
+  - Starship prompt
+  - Fira Code Nerd Font
+  - Build essentials & dev libraries
+  
+  Next steps:
+  1. Log out and back in (or reboot)
+  2. Run 'gh auth login' to authenticate with GitHub
+  3. Clone your dotfiles repo
+  ==========================================

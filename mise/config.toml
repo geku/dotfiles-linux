@@ -1,0 +1,55 @@
+# mise global configuration
+# ~/.config/mise/config.toml
+
+[settings]
+# Automatically install missing tools when entering a directory
+auto_install = true
+
+# Trust all config files (set to false for security in shared environments)
+trusted_config_paths = ["~"]
+
+# Show progress bars during installs
+verbose = false
+
+# Experimental features
+experimental = false
+
+# Legacy version file support
+legacy_version_file = true
+legacy_version_file_disable_tools = []
+
+# Plugin sources
+[plugins]
+
+[tools]
+# Node.js - Latest LTS
+node = "lts"
+
+# Python - Latest stable 3.x
+python = "latest"
+
+# Ruby - Latest stable
+# ruby = "latest"
+
+# Go - Latest stable
+# golang = "latest"
+
+# Rust - Latest stable (via rustup)
+# rust = "latest"
+
+# Java - Latest LTS (Temurin)
+# java = "temurin-21"
+
+# Terraform
+# terraform = "latest"
+
+# kubectl
+# kubectl = "latest"
+
+# Helm
+# helm = "latest"
+
+[env]
+# Global environment variables managed by mise
+# Example:
+# NODE_ENV = "development"
