@@ -18,6 +18,14 @@ experimental = false
 legacy_version_file = true
 legacy_version_file_disable_tools = []
 
+# language specific settings
+python.uv_venv_auto = true
+node.corepack = true
+
+# disables the warning for all */.node-version style files
+idiomatic_version_file_enable_tools = []
+
+
 # Plugin sources
 [plugins]
 
