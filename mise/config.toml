@@ -24,7 +24,7 @@ node.corepack = true
 
 # disables the warning for all */.node-version style files
 idiomatic_version_file_enable_tools = []
-
+npm.package_manager = "pnpm"
 
 # Plugin sources
 [plugins]
@@ -32,12 +32,16 @@ idiomatic_version_file_enable_tools = []
 [tools]
 # Node.js - Latest LTS
 node = "lts"
+npm = "latest"
+"npm:prettier" = "latest"
+pnpm = "latest"
 
 # Python - Latest stable 3.x
 python = "latest"
+uv = "latest"
 
 # Ruby - Latest stable
-# ruby = "latest"
+ruby = "latest"
 
 # Go - Latest stable
 # golang = "latest"
@@ -47,15 +51,6 @@ python = "latest"
 
 # Java - Latest LTS (Temurin)
 # java = "temurin-21"
-
-# Terraform
-# terraform = "latest"
-
-# kubectl
-# kubectl = "latest"
-
-# Helm
-# helm = "latest"
 
 [env]
 # Global environment variables managed by mise

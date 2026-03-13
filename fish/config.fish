@@ -182,3 +182,7 @@ end
 if test -f ~/.config/fish/local.fish
     source ~/.config/fish/local.fish
 end
+export PATH="$HOME/.local/bin:$PATH"
+
+# Added by Antigravity
+fish_add_path /Users/georg/.antigravity/antigravity/bin
